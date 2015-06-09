@@ -1,0 +1,10 @@
+{
+  "name": "limbo-assets-build",
+  "description": "Brunch configuration allowing to share common assets conventions across Limbo apps",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/viadeo/limbo-assets-build"
+  },
+  "main": "lib/index"
+}
