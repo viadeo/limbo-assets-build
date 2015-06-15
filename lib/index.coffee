@@ -1,4 +1,7 @@
-###
+##
+#
+# Conventions
+# -----------
 #
 # app/
 #   - services/           ignored
@@ -18,23 +21,48 @@
 #   - styles/               styles (css)
 #     - packageName.css       css package
 #
-###
+##
 
-{getGeneratedPackagesUrl, PathsHash} = require('./utils')
+PathsHash = require('./utils/PathsHash')
+
+##
+# Conventions Constants
+##
+
+SCRIPTS_SRC               = 'app/assets/scripts'
+SCRIPTS_PATH_REGEXP_TPL   = '^app\/assets\/scripts\/'
+SCRIPTS_PUBLIC_FOLDER     = 'javascripts/'
+SCRIPTS_PUBLIC_EXTENSION  = '.js'
+
+STYLES_SRC                = 'app/assets/styles'
+STYLES_PATH_REGEXP_TPL    = '^app\/assets\/styles\/'
+STYLES_PUBLIC_FOLDER      = 'styles/'
+STYLES_PUBLIC_EXTENSION   = '.css'
+
+VENDOR_PATH_REGEXP        = /^bower_components/
+VENDOR_SRC                = 'javascripts/vendor.js'
+
+##
+# Hash Factories
+##
 
 getJavascriptsHash = -> new PathsHash(
-  'app/assets/scripts',                 # path to scripts modules directories
-  '^app\/assets\/scripts\/',            # start pattern of scripts modules directories
-  'javascripts/',                       # public destination directory
-  '.js'                                 # package extension
+  SCRIPTS_SRC,
+  SCRIPTS_PATH_REGEXP_TPL,
+  SCRIPTS_PUBLIC_FOLDER,
+  SCRIPTS_PUBLIC_EXTENSION
 )
 
 getStylesHash = -> new PathsHash(
-  'app/assets/styles',                  # path to styles modules directories
-  '^app\/assets\/styles\/',             # start pattern of style modules directories
-  'styles/',                            # public destination directory
-  '.css'                                # package extension
+  STYLES_SRC,
+  STYLES_PATH_REGEXP_TPL,
+  STYLES_PUBLIC_FOLDER,
+  STYLES_PUBLIC_EXTENSION
 )
+
+##
+# Brunch generated configuration
+##
 
 exports.getBrunchConfig = ->
 
@@ -53,13 +81,13 @@ exports.getBrunchConfig = ->
     # that contains files directly copied to '.public/''
     assets: /^statics[\\/]/
 
-  modules: nameCleaner: (path) -> path.replace /^app\/assets\/scripts\//, '' # Remove 'app/assets/scripts' from client-side modules references
+  modules: nameCleaner: (path) -> path.replace(new RegExp(SCRIPTS_PATH_REGEXP_TPL), '') # Remove 'app/assets/scripts' from client-side modules references
 
   files:
 
     javascripts:
-      joinTo: getJavascriptsHash().setAdditional('javascripts/vendor.js', /^bower_components/)
-      pluginHelpers: 'javascripts/vendor.js' # inject live-reload plugin into vendor package
+      joinTo: getJavascriptsHash().setAdditional(VENDOR_SRC, VENDOR_PATH_REGEXP)
+      pluginHelpers: VENDOR_SRC # inject live-reload plugin into vendor package
 
     templates: joinTo: getJavascriptsHash()
     stylesheets: joinTo: getStylesHash()
