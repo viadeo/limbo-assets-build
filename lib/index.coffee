@@ -20,7 +20,31 @@
 #
 ###
 
-{getJoinToPathsHash, getGeneratedPackagesUrl} = require('./utils')
+{getGeneratedPackagesUrl, PathsHash} = require('./utils')
+
+###
+# generates a JS packages definition from scritps folders, e.g.
+#
+# {
+#   'javascripts/nico.js':      /^app/assets/scripts/nico/,
+#   'javascripts/otherPage.js': /^app/assets/scripts/otherPage/,
+#   'javascripts/page.js':      /^app/assets/scripts/page/
+# }
+#
+###
+getJavascriptsHash = -> new PathsHash(
+  'app/assets/scripts',                 # path to scripts modules directories
+  '^app\/assets\/scripts\/',            # start pattern of scripts modules directories
+  'javascripts/',                       # public destination directory
+  '.js'                                 # package extension
+)
+
+getStylesHash = -> new PathsHash(
+  'app/assets/styles',                  # path to styles modules directories
+  '^app\/assets\/styles\/',             # start pattern of style modules directories
+  'styles/',                            # public destination directory
+  '.css'                                # package extension
+)
 
 exports.getBrunchConfig = ->
 
@@ -31,8 +55,8 @@ exports.getBrunchConfig = ->
     # avoid server-side scripts from being compiled
     # to '.public/' folder
     ignored: [
-      /^app\/(controllers|services)/          # ignore server-side scripts
-      /[_]\w*\d*.scss/                        # restore sass conventions (do not compile _*.scss files)
+      /^app\/(controllers|services|views)/    # ignore server-side scripts
+      /[_]\w*\d*.scss/                        # ignore _*.scss files, restoring sass conventions
     ]
 
     # override 'assets/' brunch convention
@@ -47,24 +71,20 @@ exports.getBrunchConfig = ->
 
     javascripts:
 
-      joinTo: getJoinToPathsHash(
-        'app/assets/scripts',                 # path to scripts modules directories
-        '^app\/assets\/scripts\/',            # start pattern of scripts modules directories
-        'javascripts/',                       # public destination directory
-        '.js'                                 # package extension
-      )
+      joinTo: getJavascriptsHash().setAdditional('javascripts/vendor.js', /^bower_components/)
 
-      pluginHelpers: getGeneratedPackagesUrl( # inject auto-reload into main packages
+      pluginHelpers: getGeneratedPackagesUrl( # inject live-reload plugin into main packages
         'app/assets/scripts',
         'javascripts/',
         '.js'
       )
 
-    stylesheets:
+    templates: joinTo: getJavascriptsHash()
 
-      joinTo: getJoinToPathsHash(
-        'app/assets/styles',                  # path to styles modules directories
-        '^app\/assets\/styles\/',             # start pattern of style modules directories
-        'styles/',                            # public destination directory
-        '.css'                                # package extension
-      )
+    stylesheets: joinTo: getStylesHash()
+
+  plugins:
+
+    handlebars:
+      include:
+        enabled: false

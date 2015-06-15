@@ -1,9 +1,14 @@
 fs = require('fs')
 path = require('path')
+_ = require('lodash')
+
+
 
 getDirectories = (srcPath) ->
   fs.readdirSync(srcPath).filter (file) ->
     fs.statSync(path.join(srcPath, file)).isDirectory()
+
+
 
 getJoinToPath = (dirName, srcRegexpPattern, destPath, extension) ->
   result =
@@ -11,17 +16,30 @@ getJoinToPath = (dirName, srcRegexpPattern, destPath, extension) ->
     srcRegexp: new RegExp(srcRegexpPattern + dirName)
   return result
 
-exports.getJoinToPathsHash = (srcPath, srcRegexpPattern, destPath, extension) ->
 
+
+getJoinToPathsHash = (srcPath, srcRegexpPattern, destPath, extension) ->
   iteratee = {}
-
   iterator = (pkgName) ->
     pkgSpec = getJoinToPath(pkgName, srcRegexpPattern, destPath, extension)
     iteratee[pkgSpec.bundle] = pkgSpec.srcRegexp
-
   getDirectories(srcPath).forEach(iterator)
-
   return iteratee
+
+
 
 exports.getGeneratedPackagesUrl = (srcPath, destPath, ext) ->
   getDirectories(srcPath).map (dir) -> "#{path.join(destPath, dir)}#{ext}"
+
+
+
+class PathsHash
+
+  constructor: ->
+    _.merge(this, getJoinToPathsHash.apply(this, arguments))
+
+  setAdditional : (key, value) ->
+    this[key] = value
+    this
+
+exports.PathsHash = PathsHash
