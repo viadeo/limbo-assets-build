@@ -22,16 +22,6 @@
 
 {getGeneratedPackagesUrl, PathsHash} = require('./utils')
 
-###
-# generates a JS packages definition from scritps folders, e.g.
-#
-# {
-#   'javascripts/nico.js':      /^app/assets/scripts/nico/,
-#   'javascripts/otherPage.js': /^app/assets/scripts/otherPage/,
-#   'javascripts/page.js':      /^app/assets/scripts/page/
-# }
-#
-###
 getJavascriptsHash = -> new PathsHash(
   'app/assets/scripts',                 # path to scripts modules directories
   '^app\/assets\/scripts\/',            # start pattern of scripts modules directories
@@ -63,24 +53,15 @@ exports.getBrunchConfig = ->
     # that contains files directly copied to '.public/''
     assets: /^statics[\\/]/
 
-  modules:
-    # Remove 'app/assets/scripts' from client-side modules references
-    nameCleaner: (path) -> path.replace /^app\/assets\/scripts\//, ''
+  modules: nameCleaner: (path) -> path.replace /^app\/assets\/scripts\//, '' # Remove 'app/assets/scripts' from client-side modules references
 
   files:
 
     javascripts:
-
       joinTo: getJavascriptsHash().setAdditional('javascripts/vendor.js', /^bower_components/)
-
       pluginHelpers: 'javascripts/vendor.js' # inject live-reload plugin into vendor package
 
     templates: joinTo: getJavascriptsHash()
-
     stylesheets: joinTo: getStylesHash()
 
-  plugins:
-
-    handlebars:
-      include:
-        enabled: false
+  plugins: handlebars: include: enabled: false

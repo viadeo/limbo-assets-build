@@ -2,7 +2,16 @@ fs = require('fs')
 path = require('path')
 _ = require('lodash')
 
-
+###
+# generates a JS packages definition from scritps folders, e.g.
+#
+# {
+#   'javascripts/nico.js':      /^app/assets/scripts/nico/,
+#   'javascripts/otherPage.js': /^app/assets/scripts/otherPage/,
+#   'javascripts/page.js':      /^app/assets/scripts/page/
+# }
+#
+###
 
 getDirectories = (srcPath) ->
   fs.readdirSync(srcPath).filter (file) ->
@@ -30,7 +39,6 @@ getJoinToPathsHash = (srcPath, srcRegexpPattern, destPath, extension) ->
 
 exports.getGeneratedPackagesUrl = (srcPath, destPath, ext) ->
   getDirectories(srcPath).map (dir) -> "#{path.join(destPath, dir)}#{ext}"
-
 
 
 class PathsHash
