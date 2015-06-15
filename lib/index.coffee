@@ -73,11 +73,7 @@ exports.getBrunchConfig = ->
 
       joinTo: getJavascriptsHash().setAdditional('javascripts/vendor.js', /^bower_components/)
 
-      pluginHelpers: getGeneratedPackagesUrl( # inject live-reload plugin into main packages
-        'app/assets/scripts',
-        'javascripts/',
-        '.js'
-      )
+      pluginHelpers: 'javascripts/vendor.js' # inject live-reload plugin into vendor package
 
     templates: joinTo: getJavascriptsHash()
 
