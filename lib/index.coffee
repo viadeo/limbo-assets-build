@@ -40,7 +40,8 @@ STYLES_PUBLIC_FOLDER      = 'styles/'
 STYLES_PUBLIC_EXTENSION   = '.css'
 
 VENDOR_PATH_REGEXP        = /^bower_components/
-VENDOR_SRC                = 'javascripts/vendor.js'
+VENDOR_SCRIPTS_SRC        = 'javascripts/vendor.js'
+VENDOR_STYLES_SRC         = 'styles/vendor.css'
 
 ##
 # Hash Factories
@@ -86,10 +87,10 @@ exports.getBrunchConfig = ->
   files:
 
     javascripts:
-      joinTo: getJavascriptsHash().setAdditional(VENDOR_SRC, VENDOR_PATH_REGEXP)
-      pluginHelpers: VENDOR_SRC # inject live-reload plugin into vendor package
+      joinTo: getJavascriptsHash().setAdditional(VENDOR_SCRIPTS_SRC, VENDOR_PATH_REGEXP)
+      pluginHelpers: VENDOR_SCRIPTS_SRC # inject live-reload plugin into vendor package
 
     templates: joinTo: getJavascriptsHash()
-    stylesheets: joinTo: getStylesHash()
+    stylesheets: joinTo: getStylesHash().setAdditional(VENDOR_STYLES_SRC, VENDOR_PATH_REGEXP)
 
   plugins: handlebars: include: enabled: false
