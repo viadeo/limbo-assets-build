@@ -83,7 +83,7 @@ exports.getBrunchConfig = ->
 
     # override 'assets/' brunch convention
     # that contains files directly copied to '.public/''
-    assets: /^statics[\\/]/
+    assets: /^app\/statics[\\/]/
 
   modules:
     nameCleaner: (path) -> path.replace(new RegExp(SCRIPTS_PATH_REGEXP_TPL), '')          # Remove 'app/assets/scripts' from client-side modules references
