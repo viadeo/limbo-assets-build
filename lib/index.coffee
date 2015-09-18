@@ -5,6 +5,7 @@
 #
 # app/
 #   - services/             ignored
+#   - proxies/              ignored
 #   - controllers/          ignored
 #   - views/                ignored
 #   - statics/              client-side copied assets
@@ -77,7 +78,7 @@ exports.getBrunchConfig = ->
     # avoid server-side scripts from being compiled
     # to '.public/' folder
     ignored: [
-      /^app\/(controllers|services|views)/                                                # ignore server-side scripts
+      /^app\/(controllers|services|proxies|views)/                                        # ignore server-side scripts
       /[_]\w*\d*.scss/                                                                    # ignore _*.scss files, restoring sass conventions
     ]
 
